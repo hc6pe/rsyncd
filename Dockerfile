@@ -1,16 +1,14 @@
-FROM debian:12@sha256:7d3e8810c96a6a278c218eb8e7f01efaec9d65f50c54aae37421dc3cbeba6535
-MAINTAINER TANABE Ken-ichi <nabeken@tknetworks.org>
+FROM alpine:latest
+MAINTAINER Ernesto Perez <eperez@linux.ec>
+# Taken from https://github.com/nabeken/docker-volume-container-rsync
 
-SHELL ["/bin/bash" , "-c"]
-
-RUN set -euxo pipefail; \
-  apt-get update; \
-  apt-get upgrade -y; \
-  apt-get install -y --no-install-recommends rsync; \
-  rm -rf /var/lib/apt/lists/*
+RUN apk add --update-cache \
+    rsync \
+    tzdata \
+ && rm -rf /var/cache/apk/*
 
 EXPOSE 873
 VOLUME /docker
-ADD ./run /usr/local/bin/run
+ADD ./run.sh /run.sh
 
-ENTRYPOINT ["/usr/local/bin/run"]
+ENTRYPOINT ["/run.sh"]
